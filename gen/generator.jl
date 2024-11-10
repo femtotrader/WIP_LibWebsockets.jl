@@ -55,7 +55,7 @@ function should_wrap(cursor)
     if kind == Clang.LibClang.CXCursor_FunctionDecl
         return name in ESSENTIAL_FUNCTIONS || haskey(NAME_CONFLICTS, name)
     elseif kind in [Clang.LibClang.CXCursor_StructDecl, Clang.LibClang.CXCursor_TypedefDecl]
-        # Respect l'ordre de TYPE_ORDER
+        # Respect the order of TYPE_ORDER
         for (index, type_name) in enumerate(TYPE_ORDER)
             if type_name == name
                 @info "Found type $name at position $index"

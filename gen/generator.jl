@@ -6,7 +6,7 @@ using CEnum
 const LIBWEBSOCKETS_LIB_PATH = libwebsockets_jll.artifact_dir
 const LIBWEBSOCKETS_INCLUDE_PATH = joinpath(LIBWEBSOCKETS_LIB_PATH, "include")
 
-# Types dans l'ordre de dépendance
+# Types in dependency order
 const TYPE_ORDER = [
     "lws",
     "lws_context",
@@ -20,7 +20,7 @@ const TYPE_ORDER = [
     "lws_fop_fd"
 ]
 
-# Functions à wrapper
+# Functions to wrap
 const ESSENTIAL_FUNCTIONS = [
     "lws_create_context",
     "lws_context_destroy",
@@ -38,7 +38,7 @@ const ESSENTIAL_ENUMS = [
     "lws_token_indexes"
 ]
 
-# Gérer les conflits de noms struct/fonction
+# Handle struct/function name conflicts
 const NAME_CONFLICTS = Dict{String,String}(
     "lws_dll2_owner" => "lws_dll2_owner_fn",
     "lws_threadpool_task_status" => "lws_threadpool_task_status_fn",
@@ -103,7 +103,7 @@ function generate_wrapper()
         )
     )
     
-    # Headers dans l'ordre de dépendance
+    # Headers in dependency order
     headers = [
         joinpath(LIBWEBSOCKETS_INCLUDE_PATH, "libwebsockets", "lws-vfs.h"),
         joinpath(LIBWEBSOCKETS_INCLUDE_PATH, "libwebsockets", "lws-context-vhost.h"),

@@ -214,8 +214,8 @@ function generate_wrapper()
         "codegen" => Dict{String,Any}(
             "use_julia_bool" => true,
             "use_ccall_macro" => true,
-            "wrap_structs" => false,
-            "wrap_enums" => false,
+            "wrap_structs" => true,
+            "wrap_enums" => true,
             "struct_field_comment_style" => "doxygen",
             "enum_export_symbols" => true,
             "function_rename_transform" => rename_type,

@@ -15,7 +15,7 @@ end
 
 function version()
     ptr = lws_get_library_version()
-    unsafe_string(ptr)
+    VersionNumber(unsafe_string(ptr))
 end
 
 include("types.jl")

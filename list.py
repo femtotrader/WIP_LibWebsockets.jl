@@ -1,3 +1,8 @@
+"""
+Find and print files in current directory with .toml or .jl extension
+excluding lib folder and Manifest.toml files.
+"""
+
 import os
 
 def find_and_print_files(extensions=["toml", "jl"], exclude_paths=["lib", "Manifest.toml"]):

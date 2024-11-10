@@ -1,0 +1,81 @@
+# gen/generator.toml
+[general]
+library_name = "libwebsockets"
+module_name = "LibWebsocketsWrapper"
+output_file_path = "../lib/wrapper.jl"
+jll_pkg_name = "libwebsockets_jll"
+prologue_file_path = "./prologue.jl"
+epilogue_file_path = "./epilogue.jl"
+
+# Exclusions spécifiques
+output_ignorelist = [
+    "OPENSSL_.*",
+    "MBEDTLS_.*",
+    ".*_SSL_.*",
+    ".*_TLS_.*",
+    "stack_st_.*",
+    "STACK_OF_.*"
+]
+
+exclude_function_names = [
+    "OSSL_provider_init",
+    "lws_dll2_owner",
+    "lws_xos",
+    "lws_threadpool_task_status",
+    "lws_tokenize"
+]
+
+exclude_types = [
+    "stack_st_.*",
+    "STACK_OF_.*",
+    "OPENSSL_sk_.*",
+    "OPENSSL_STRING"
+]
+
+exclude_symbol_prefixes = [
+    "stack_",
+    "OPENSSL_",
+    "SSL_",
+    "TLS_"
+]
+
+# Symboles à wrapper
+functions_to_wrap = [
+    "lws_create_context",
+    "lws_context_destroy",
+    "lws_service",
+    "lws_write",
+    "lws_get_library_version",
+    "lws_callback_on_writable",
+    "lws_rx_flow_control"
+]
+
+types_to_wrap = [
+    "lws",
+    "lws_context",
+    "lws_protocols",
+    "lws_context_creation_info"
+]
+
+enums_to_wrap = [
+    "lws_write_protocol",
+    "lws_callback_reasons"
+]
+
+[codegen]
+use_julia_bool = true
+use_ccall_macro = true
+wrap_structs = true
+wrap_callbacks = true
+field_access_method_required = false
+struct_field_comment_style = "doxygen"
+extract_c_comment_style = "doxygen"
+auto_mutability = true
+opaque_as_mutable_struct = true
+
+[codegen.wrap_option]
+ignore_pure_virtual = true
+ignore_incomplete_types = true
+ignore_function_name_collisions = true
+skip_empty_structs = true
+skip_struct_constructors = true

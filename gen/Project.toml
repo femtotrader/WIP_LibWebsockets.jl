@@ -1,0 +1,5 @@
+[deps]
+CEnum = "fa961155-64e5-5f13-b03f-caf6b980ea82"
+Clang = "40e3b903-d033-50b4-a0cc-940c62c95e31"
+OpenSSL_jll = "458c3c95-2e84-50aa-8efc-19380b2a3a95"
+libwebsockets_jll = "b6b84edf-6aef-5ff6-9b66-656961a84a09"

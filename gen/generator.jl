@@ -1,4 +1,3 @@
-# gen/generator.jl
 using libwebsockets_jll
 using Clang.Generators
 using CEnum

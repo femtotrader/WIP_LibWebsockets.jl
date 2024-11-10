@@ -4,17 +4,15 @@ using Serde
 
 __precompile__(false)
 
-#include("../lib/wrapper.jl")
+include("../lib/wrapper.jl")
+
+__precompile__(true)
 
 using libwebsockets_jll
 export libwebsockets_jll
 
-function lws_get_library_version()
-    @ccall libwebsockets.lws_get_library_version()::Ptr{Cchar}
-end
-
 function version()
-    ptr = lws_get_library_version()
+    ptr = LibWebsocketsWrapper.lws_get_library_version()
     VersionNumber(unsafe_string(ptr))
 end
 

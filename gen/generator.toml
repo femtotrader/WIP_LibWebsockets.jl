@@ -1,4 +1,3 @@
-# gen/generator.toml
 [general]
 library_name = "libwebsockets"
 module_name = "LibWebsocketsWrapper"
@@ -7,7 +6,7 @@ jll_pkg_name = "libwebsockets_jll"
 prologue_file_path = "./prologue.jl"
 epilogue_file_path = "./epilogue.jl"
 
-# Exclusions spécifiques
+# Specific exclusions
 output_ignorelist = [
     "OPENSSL_.*",
     "MBEDTLS_.*",
@@ -39,7 +38,7 @@ exclude_symbol_prefixes = [
     "TLS_"
 ]
 
-# Symboles à wrapper
+# Symbols to wrap
 functions_to_wrap = [
     "lws_create_context",
     "lws_context_destroy",

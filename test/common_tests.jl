@@ -1,7 +1,6 @@
-using LibWebsockets: lws_get_library_version
+using LibWebsockets: version
 
 
 @testset "common_tests" begin
-  println(lws_get_library_version())
-  @test 1 == 2
+  @test version() == "4.3.3-v4.3.3"
 end

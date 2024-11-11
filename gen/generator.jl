@@ -21,7 +21,7 @@ const TYPE_ORDER = [
     "lws_tokenize",
     "lws_fops_index",
     "lws_plat_file_ops",
-    "lws_fop_fd"
+    "lws_fop_fd",
 ]
 
 # Functions to wrap
@@ -33,19 +33,12 @@ const ESSENTIAL_FUNCTIONS = [
     "lws_callback_on_writable",
     "lws_get_library_version",
     "lws_get_fops",
-    "lws_set_fops"
+    "lws_set_fops",
 ]
 
-const ESSENTIAL_ENUMS = [
-    "lws_callback_reasons",
-    "lws_write_protocol",
-    "lws_token_indexes"
-]
+const ESSENTIAL_ENUMS = ["lws_callback_reasons", "lws_write_protocol", "lws_token_indexes"]
 
-const FIXABLE_EXPRS_TO_STR_CONCAT = [
-    "OSSL_HTTP_PREFIX",
-    "OSSL_HTTPS_PREFIX"
-]
+const FIXABLE_EXPRS_TO_STR_CONCAT = ["OSSL_HTTP_PREFIX", "OSSL_HTTPS_PREFIX"]
 
 const FILTERED_PATTERNS = [
     "LWS_TI",
@@ -129,7 +122,7 @@ const FILTERED_PATTERNS = [
     "LWS_FOP_OPEN",
     "LWS_FOP_CLOSE",
     "LWS_FOP_SEEK_CUR",
-    "lws_xos"
+    "lws_xos",
 ]
 
 
@@ -142,7 +135,7 @@ const FILTERED_PATTERNS = [
 const NAME_CONFLICTS = Dict{String,String}(
     "lws_dll2_owner" => "lws_dll2_owner_fn",
     "lws_threadpool_task_status" => "lws_threadpool_task_status_fn",
-    "lws_tokenize" => "lws_tokenize_fn"
+    "lws_tokenize" => "lws_tokenize_fn",
 )
 
 function rename_type(name::AbstractString)
@@ -152,25 +145,26 @@ end
 function should_wrap(cursor)
     name = string(cursor)
     kind = Clang.LibClang.clang_getCursorKind(cursor)
-    
+
     # Block all deprecation related definitions with more specific checks
     if kind == Clang.LibClang.CXCursor_MacroDefinition
         tokens = Clang.tokenize(cursor)
         if !isnothing(tokens)
             token_text = join([Clang.spelling(t) for t in tokens], " ")
-            if contains(token_text, "OSSL_DEPRECATED") || contains(token_text, "OSSL_DEPRECATEDIN")
+            if contains(token_text, "OSSL_DEPRECATED") ||
+               contains(token_text, "OSSL_DEPRECATEDIN")
                 @info "Skipping deprecation macro:" name token_text
                 return false
             end
         end
     end
-    
+
     # Filter out patterns from FILTERED_PATTERNS
     if any(pattern -> contains(name, pattern), FILTERED_PATTERNS)
         @info "Skipping filtered pattern:" name
         return false
     end
-    
+
     if kind == Clang.LibClang.CXCursor_FunctionDecl
         return name in ESSENTIAL_FUNCTIONS || haskey(NAME_CONFLICTS, name)
     elseif kind in [Clang.LibClang.CXCursor_StructDecl, Clang.LibClang.CXCursor_TypedefDecl]
@@ -186,7 +180,7 @@ function should_wrap(cursor)
            kind == Clang.LibClang.CXCursor_EnumConstantDecl
         return true
     end
-    
+
     false
 end
 
@@ -199,7 +193,7 @@ function generate_wrapper()
         "-DLWS_WITH_HTTP_UNCOMMON_HEADERS",
         "-DLWS_WITH_CUSTOM_HEADERS",
         "-DLWS_WITH_FILE_OPS",
-        "-DLWS_WITH_VFS"
+        "-DLWS_WITH_VFS",
     ]
 
     options = Dict{String,Any}(
@@ -209,7 +203,7 @@ function generate_wrapper()
             "output_file_path" => "../lib/wrapper.jl",
             "jll_pkg_name" => "libwebsockets_jll",
             "prologue_file_path" => "./prologue.jl",
-            "output_ignorelist" => FILTERED_PATTERNS
+            "output_ignorelist" => FILTERED_PATTERNS,
         ),
         "codegen" => Dict{String,Any}(
             "use_julia_bool" => true,
@@ -224,9 +218,9 @@ function generate_wrapper()
             #"exclude_macros" => FILTERED_PATTERNS,
             #"ignore_header_defines" => FILTERED_PATTERNS,
             #"ignore_header_macros" => true
-        )
+        ),
     )
-    
+
     # Headers in dependency order
     headers = [
         # joinpath(LIBWEBSOCKETS_INCLUDE_PATH, "libwebsockets", "lws-logs.h"),
@@ -257,18 +251,18 @@ function generate_wrapper()
         # joinpath(LIBWEBSOCKETS_INCLUDE_PATH, "libwebsockets", "lws-vfs.h"),
         # joinpath(LIBWEBSOCKETS_INCLUDE_PATH, "libwebsockets", "lws-context-vhost.h"),
         # joinpath(LIBWEBSOCKETS_INCLUDE_PATH, "libwebsockets", "lws-http.h"),
-        joinpath(LIBWEBSOCKETS_INCLUDE_PATH, "libwebsockets.h")
+        joinpath(LIBWEBSOCKETS_INCLUDE_PATH, "libwebsockets.h"),
     ]
-    
+
     args = get_default_args()
     push!(args, "-I$LIBWEBSOCKETS_INCLUDE_PATH")
     push!(args, "-I$OPENSSL_INCLUDE_PATH")
 
     append!(args, compile_defs)
-    
+
     ctx = create_context(headers, args, options)
     #ctx.options["declaration_wrapped"] = should_wrap
-    
+
     # build without printing so we can do custom rewriting
     build!(ctx, BUILDSTAGE_NO_PRINTING)
 
@@ -278,7 +272,10 @@ function generate_wrapper()
             rhs = expr.args[2]
             if rhs isa Expr && rhs.head == :call && length(rhs.args) == 2
                 # If it looks like string("://"), convert to string * "://"
-                if rhs.args[1] isa String || (rhs.args[1] isa Symbol && string(rhs.args[1]) in ["OSSL_HTTP_NAME", "OSSL_HTTPS_NAME"])
+                if rhs.args[1] isa String || (
+                    rhs.args[1] isa Symbol &&
+                    string(rhs.args[1]) in ["OSSL_HTTP_NAME", "OSSL_HTTPS_NAME"]
+                )
                     @info "Converting string concat for:" expr
                     expr.args[2] = Expr(:call, :*, rhs.args[1], rhs.args[2])
                 end
@@ -290,15 +287,15 @@ function generate_wrapper()
     function rewrite!(dag::ExprDAG)
         @info "Starting DAG rewrite"
         @info "Number of nodes:" length(get_nodes(dag))
-        
+
         for node in get_nodes(dag)
             node_type = typeof(node)
             exprs = get_exprs(node)
-                        
+
             # Dump to see exact structure
             for (i, expr) in enumerate(exprs)
                 #@info "Expression $i:" expr
-                if expr isa Expr 
+                if expr isa Expr
                     if expr.head == :const
                         #@info "Found const expression:" expr.args[1]
                         const_expr = expr.args[1]
@@ -306,12 +303,14 @@ function generate_wrapper()
                             lhs = const_expr.args[1]
                             lhs_str = string(lhs)
                             #@info "Checking LHS:" lhs_str                            
-                            if lhs_str == "OSSL_HTTP_PREFIX" || lhs_str == "OSSL_HTTPS_PREFIX"
+                            if lhs_str == "OSSL_HTTP_PREFIX" ||
+                               lhs_str == "OSSL_HTTPS_PREFIX"
                                 #@info "Found target expression:" lhs_str
                                 rhs = const_expr.args[2]
                                 if rhs isa Expr && rhs.head == :call
                                     #@info "Converting string concat for:" lhs_str
-                                    const_expr.args[2] = Expr(:call, :*, rhs.args[1], rhs.args[2])
+                                    const_expr.args[2] =
+                                        Expr(:call, :*, rhs.args[1], rhs.args[2])
                                 end
                             end
                         end

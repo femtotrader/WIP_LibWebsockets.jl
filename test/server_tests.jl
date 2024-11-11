@@ -1,2 +1,1 @@
-@testset "server_tests" begin
-end
+@testset "server_tests" begin end

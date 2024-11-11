@@ -41,6 +41,7 @@ using LibWebsockets.LibWebsocketsWrapper: lws
         try
             client = create_ws_client(
                 "wss://echo.websocket.org",
+                skip_cert_verify=true,  # only for testing purpose
                 on_message = msg -> begin
                     message_received[] = true
                     received_message[] = msg

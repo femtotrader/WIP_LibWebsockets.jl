@@ -32,6 +32,7 @@ using .LibWebsocketsWrapper:
     lws_plugin_evlib,
     lws_log_cx,
     lws_vhost,
+    lws_sequencer,
     CONTEXT_PORT_NO_LISTEN,
     LWS_SERVER_OPTION_DO_SSL_GLOBAL_INIT,
     LCCSCF_USE_SSL,
@@ -40,7 +41,10 @@ using .LibWebsocketsWrapper:
     LWS_CALLBACK_CLIENT_RECEIVE,
     LWS_CALLBACK_CLIENT_WRITEABLE,
     LWS_CALLBACK_CLIENT_CONNECTION_ERROR,
-    LWS_CALLBACK_CLOSED
+    LWS_CALLBACK_CLOSED,
+    LWS_SERVER_OPTION_PEER_CERT_NOT_REQUIRED,
+    LCCSCF_ALLOW_SELFSIGNED,
+    LCCSCF_ALLOW_EXPIRED
 
 include("context.jl")
 include("types.jl")

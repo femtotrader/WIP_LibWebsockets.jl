@@ -9,6 +9,8 @@ WebSocket client implementation
 const WS_CLIENTS = Dict{Ptr{lws},WSClient}()
 
 """
+    ws_callback(wsi::Ptr{lws}, reason::Cuint, user::Ptr{Cvoid}, in_data::Ptr{Cvoid}, len::Csize_t)::Cint
+
 Generic callback handler for WebSocket events
 """
 function ws_callback(
@@ -64,6 +66,8 @@ function ws_callback(
 end
 
 """
+    create_protocols()
+
 Create WebSocket protocols for the client
 """
 function create_protocols()
@@ -85,6 +89,8 @@ function create_protocols()
 end
 
 """
+    create_context_info(protocols::Vector{lws_protocols})::lws_context_creation_info
+
 Create a new lws_context_creation_info with default values
 """
 function create_context_info(protocols::Vector{lws_protocols})::lws_context_creation_info
@@ -194,6 +200,8 @@ function create_context_info(protocols::Vector{lws_protocols})::lws_context_crea
 end
 
 """
+    validate_ws_url(url::AbstractString)
+
 Validate WebSocket URL
 """
 function validate_ws_url(url::AbstractString)
@@ -219,6 +227,8 @@ function validate_ws_url(url::AbstractString)
 end
 
 """
+    create_ws_client(url::AbstractString; use_ssl::Bool = true, on_message::Function = (msg) -> nothing, on_connected::Function = () -> nothing, on_error::Function = (err) -> nothing)::WSClient
+
 Create a WebSocket client
 """
 function create_ws_client(
@@ -393,6 +403,8 @@ end
 
 
 """
+    send_message(client::WSClient, message::AbstractString)
+
 Send a message through the WebSocket connection
 """
 function send_message(client::WSClient, message::AbstractString)
@@ -409,6 +421,8 @@ function send_message(client::WSClient, message::AbstractString)
 end
 
 """
+    isopen(client::WSClient)::Bool
+
 Check if the WebSocket connection is open
 """
 function isopen(client::WSClient)::Bool
@@ -416,6 +430,8 @@ function isopen(client::WSClient)::Bool
 end
 
 """
+    close(client::WSClient)
+
 Close the WebSocket connection
 """
 function close(client::WSClient)

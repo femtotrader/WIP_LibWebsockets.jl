@@ -1,6 +1,10 @@
 using ..LibWebsocketsWrapper: lws, lws_context
 
-# Client data structure
+"""
+   WSClientData()
+
+Client data structure
+"""
 mutable struct WSClientData
     need_to_send::Bool
     pending_message::String
@@ -9,6 +13,12 @@ mutable struct WSClientData
 end
 
 """
+    WSClient(;
+        on_message::Function = (msg) -> nothing,
+        on_connected::Function = () -> nothing,
+        on_error::Function = (err) -> nothing,
+    )
+
 WebSocket client type encapsulating the connection state
 """
 mutable struct WSClient

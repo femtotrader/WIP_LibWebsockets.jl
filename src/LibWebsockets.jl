@@ -31,10 +31,16 @@ using .LibWebsocketsWrapper:
     lws_state_notify_link,
     lws_plugin_evlib,
     lws_log_cx,
+    lws_vhost,
     CONTEXT_PORT_NO_LISTEN,
     LWS_SERVER_OPTION_DO_SSL_GLOBAL_INIT,
     LCCSCF_USE_SSL,
-    LCCSCF_SKIP_SERVER_CERT_HOSTNAME_CHECK
+    LCCSCF_SKIP_SERVER_CERT_HOSTNAME_CHECK,
+    LWS_CALLBACK_CLIENT_ESTABLISHED,
+    LWS_CALLBACK_CLIENT_RECEIVE,
+    LWS_CALLBACK_CLIENT_WRITEABLE,
+    LWS_CALLBACK_CLIENT_CONNECTION_ERROR,
+    LWS_CALLBACK_CLOSED
 
 include("context.jl")
 include("types.jl")

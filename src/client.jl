@@ -357,7 +357,11 @@ function create_ws_client(
 
     # Set up connection parameters
     host = string(uri.host)
-    port = Int32(isnothing(uri.port) ? (use_ssl ? 443 : 80) : uri.port)
+    port = Int32(if isnothing(uri.port) || isempty(uri.port)
+        use_ssl ? 443 : 80
+    else
+        parse(Int, uri.port)
+    end)
     path = isempty(uri.path) ? "/" : string(uri.path)
 
     # Create connection info avec la signature complète
